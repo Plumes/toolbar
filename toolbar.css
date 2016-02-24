@@ -1,0 +1,146 @@
+.cmcc-toolbar {
+    position: fixed;
+    width: 100%;
+    height:50px;
+    bottom:0px;
+    right:0px;
+}
+.cmcc-panel {
+    position: fixed;
+    width: 100%;
+    height:300px;
+    bottom:50px;
+}
+#close-btn {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+    padding: 3px;
+}
+.cmcc-panel .container {
+    width: 300px;
+    height:100%;
+    margin: 0px auto;
+    padding: 0px;
+    position: relative;
+    background-color: #ededed;
+    border: 1px solid #333;
+    border-bottom: none;
+}
+.cmcc-panel .total-package {
+    width: 100%;
+    height:100px;
+    background-color: #009dcc;
+    color: #fff;
+}
+.cmcc-panel .total-package .item {
+    width: 50%;
+    height: 100%;
+    float: left;
+    padding: 20px 0;
+}
+.cmcc-panel .total-package .item .title {
+    color: #1e6781;
+    height: 20px;
+    line-height:20px;
+    font-size: 20px;
+}
+.cmcc-panel .total-package .item .num {
+    height: 40px;
+    line-height: 40px;
+    font-size: 25px;
+}
+.cmcc-panel .package {
+    width: 290px;
+    height: 40px;
+    padding: 15px 5px;
+    position: relative;
+}
+.cmcc-panel .package .intro {
+    height: 20px;
+    width: 290px;
+    position: absolute;
+}
+.cmcc-panel .package .intro .item {
+    width: 20%;
+    height: 20px;
+    line-height: 20px;
+    display: inline-block;
+    text-align: center;
+    font-size: 14px;
+}
+.cmcc-panel .package .data-bar {
+    width: 290px;
+    position: absolute;
+    bottom: 15px;
+}
+.cmcc-panel .data-bar .used {
+    height: 5px;
+    background-color: #9ee035;
+    display: inline-block;
+}
+
+.cmcc-panel .data-bar .remain {
+    height: 5px;
+    background-color: #fff;
+    display: inline-block;
+}
+
+.cmcc-panel .yewu-wrapper {
+    width: 100%;
+    height: 100%;
+    padding: 0 10px;
+}
+.cmcc-panel .yewu {
+    width: 100px;
+    height: 80px;
+    float: left;
+    margin-top: 10px;
+}
+.cmcc-panel .yewu img {
+    height: 40px;
+}
+
+.cmcc-panel .yewu .buy-yewu-btn {
+    background-color: #2196F3;
+    color:#fff;
+    padding: 3px 5px;
+    border-radius: 2px;
+    font-size: 12px;
+}
+.cmcc-panel .ad-wrapper img {
+    height: 100px;
+    display: block;
+}
+.cmcc-toolbar .container {
+    width: 100%;
+    position: relative;
+}
+.cmcc-toolbar .left-bar {
+    display: inline-block;
+    position: absolute;
+    left:0px;
+    right: 50px;
+    background-color: #efefef;
+}
+.cmcc-toolbar .left-bar .app-btn {
+    width: 70px;
+    height: 50px;
+    padding: 0px 10px;
+    display: inline-block;
+}
+.cmcc-toolbar .left-bar .app-btn img {
+    width: 25px;
+    height: 25px;
+}
+.cmcc-toolbar .logo {
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    right:0px;
+    top: 0px;
+}
+.cmcc-toolbar .logo img {
+    width: 50px;
+    height: 50px;
+}
