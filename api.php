@@ -70,10 +70,31 @@ function get_yewu() {
     echo(json_encode($yewu));
 }
 
+function create_yewu() {
+    $yewu['status'] = intval($_POST['status']);
+    $yewu['name'] = $_POST['name'];
+    $yewu['icon'] = $_POST['icon'];
+
+    DB::insert("yewu",$yewu);
+    echo(json_encode(['code'=>0]));
+}
+
 function edit_yewu() {
     $yewu_id = $_GET['id'];
     $status = intval($_GET['status']);
-    DB::update("yewu",array("status"=>$status),"id=%i",$yewu_id);
+    if(in_array($status,[0,1])) {
+        DB::update("yewu",array("status"=>$status),"id=%i",$yewu_id); 
+    }
+    $name = $_GET['name'];
+    if(strlen($name)>1) {
+        DB::update("yewu",array("name"=>$name),"id=%i",$yewu_id);
+    }
+
+    $icon = $_GET['icon'];
+    if(strlen($icon)>1) {
+        DB::update("yewu",array("icon"=>$icon),"id=%i",$yewu_id);
+    }
+    
     echo(json_encode(['code'=>0]));
 }
 
@@ -101,7 +122,7 @@ function get_ad() {
     $mysqli = new mysqli("localhost", "root", "123456qwe", "toolbar");
     $mysqli->set_charset('utf8');
     $ip_addr = get_ip();
-    $sql = "SELECT * FROM ad LIMIT 0,3";
+    $sql = "SELECT * FROM ad WHERE status=1 LIMIT 0,3";
     $res = $mysqli->query($sql);
     while ($row = $res->fetch_assoc()) {
         $ad_list[] = array(

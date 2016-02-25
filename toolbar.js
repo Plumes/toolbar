@@ -56,11 +56,13 @@ $("#yewu").click(function() {
         dataTpye: "jsonp",
         success: function( response ) {
             response = JSON.parse(response);
-            var content = "";
+            var content = '<div class="yewu-wrapper">';
             for(var i in response) {
                 var yewu = response[i];
-                content += '<div class="yewu-wrapper"><div class="yewu"><img src="'+yewu['image']+'" alt="" /><p class="title">'+yewu['name']+'</p><a href="javascript:void(0);" class="buy-yewu-btn" data-yewu-id="'+yewu['id']+'">订购</a></div></div>';
+                console.log(yewu);
+                content += '<div class="yewu"><img src="'+yewu['image']+'" alt="" /><p class="title">'+yewu['name']+'</p><a href="javascript:void(0);" class="buy-yewu-btn" data-yewu-id="'+yewu['id']+'">订购</a></div>';
             }
+            content += "</div>";
             content = '<div id="close-btn">X</div>'+content;
             $(".cmcc-panel").find(".container").append(content);
             $(".cmcc-panel").show();
@@ -78,7 +80,6 @@ $("#ad").click(function() {
         success: function( response ) {
             response = JSON.parse(response);
             var content = "";
-            console.log(response[0]);
             for(var i in response) {
                 var ad = response[i];
                 content += '<div class="ad-wrapper"><a href="'+ad['link']+'"><img src="'+ad['image']+'" alt="" /></a></div>';
