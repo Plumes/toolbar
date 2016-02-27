@@ -5,6 +5,11 @@
  * Date: 2016/2/17
  * Time: 20:01
  */
+session_start();
+if(intval($_SESSION['userid'])<=0) {
+    echo "<script>location.href='login.php';</script>";
+    exit;
+}
 require_once 'meekrodb.2.3.class.php';
 $result = DB::query("SELECT * FROM data_plan ORDER BY id DESC");
 ?>
@@ -58,7 +63,7 @@ $result = DB::query("SELECT * FROM data_plan ORDER BY id DESC");
                     <th>#</th>
                     <th>套餐名称</th>
                     <th>总量</th>
-                    <!--<th>套餐价格</th>-->
+                    <th>价格</th>
                     <th>状态</th>
                     <th>操作</th>
                 </tr>
@@ -69,13 +74,14 @@ $result = DB::query("SELECT * FROM data_plan ORDER BY id DESC");
                     <tr>
                         <td><?=($k+1);?></td>
                         <td><?=$data_plan['name'];?></td>
-                        <td><?=$data_plan['size'];?></td>
+                        <td><?=$data_plan['size'];?> MB</td>
+                        <td><?=$data_plan['price'];?> 元</td>
                         <?php if($data_plan['status']==0):?>
                             <td>暂停中</td>
                         <?php else: ?>
                             <td>销售中</td>
                         <?php endif; ?>
-                        <td><a href="javascript:void(0);" class="edit-btn" data-id="<?=$data_plan['id'];?>" data-name="<?=$data_plan['name'];?>" data-size="<?=$data_plan['size'];?>" data-status="<?=$data_plan['status'];?>">编辑</a></td>
+                        <td><a href="javascript:void(0);" class="edit-btn" data-id="<?=$data_plan['id'];?>" data-name="<?=$data_plan['name'];?>"  data-price="<?=$data_plan['price'];?>" data-size="<?=$data_plan['size'];?>" data-status="<?=$data_plan['status'];?>">编辑</a></td>
                     </tr>
                 <?php endforeach;?>
                 </tbody>
@@ -107,6 +113,13 @@ $result = DB::query("SELECT * FROM data_plan ORDER BY id DESC");
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="data-plan-price" class="control-label">套餐价格:</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="data-plan-price">
+                            <span class="input-group-addon">元</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="radio-inline">
                             <input type="radio" name="data-plan-status" id="data-plan-status-1" value="1"> 开始销售
                         </label>
@@ -129,11 +142,13 @@ $result = DB::query("SELECT * FROM data_plan ORDER BY id DESC");
         var id = $(this).data("id");
         var name = $(this).data("name");
         var size = $(this).data("size");
+        var price = $(this).data("price");
         var status = $(this).data("status");
 
         $("#data-plan-title").text("编辑 "+name);
         $("#data-plan-name").val(name);
         $("#data-plan-size").val(size);
+        $("#data-plan-price").val(price);
         $("#data-plan-status-"+status).attr("checked",true);
         $("#edit-confirm").data("id",id);
 
@@ -144,6 +159,7 @@ $result = DB::query("SELECT * FROM data_plan ORDER BY id DESC");
         $("#data-plan-title").text("新建套餐");
         $("#data-plan-name").val("");
         $("#data-plan-size").val("");
+        $("#data-plan-price").val("0.00");
         $("#data-plan-status-1").attr("checked",true);
         $("#edit-confirm").data("id",0);
 
@@ -153,16 +169,17 @@ $result = DB::query("SELECT * FROM data_plan ORDER BY id DESC");
         var id = $(this).data("id");
         var name = $("#data-plan-name").val();
         var size = $("#data-plan-size").val();
+        var price = $("#data-plan-price").val();
         var status = $("input[name='data-plan-status']:checked").val();
 
         if(parseInt(id)>0) {
             var api = "api.php?act=edit_data_plan";
-            $.post(api,{id:id,name:name,size:size,status:status},function() {
+            $.post(api,{id:id,name:name,size:size,price:price,status:status},function() {
                 location.href=location.href;
             });
         } else {
             var api = "api.php?act=create_data_plan";
-            $.post(api,{name:name,size:size,status:status},function() {
+            $.post(api,{name:name,size:size,price:price,status:status},function() {
                 location.href=location.href;
             });
         }

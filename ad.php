@@ -5,6 +5,11 @@
  * Date: 2016/2/17
  * Time: 20:01
  */
+session_start();
+if(intval($_SESSION['userid'])<=0) {
+    echo "<script>location.href='login.php';</script>";
+    exit;
+}
 require_once 'meekrodb.2.3.class.php';
 $result = DB::query("SELECT * FROM ad ORDER BY id DESC");
 ?>

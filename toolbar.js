@@ -1,5 +1,6 @@
 $("body").append('<div class="cmcc-panel"><div class="container"></div></div><div class="cmcc-toolbar"><div class="container"><div class="logo" id="cmcc-logo"><img src="http://192.168.33.10:8080/image/logo.gif" alt="" /></div></div></div>');
 var content = '<div class="left-bar"><div class="app-btn" id="liuliang"><img src="http://192.168.33.10:8080/image/logo.gif" alt="" /><p class="title">流量查询</p></div>';
+content += '<div class="app-btn" id="data-plan"><img src="http://192.168.33.10:8080/image/logo.gif" alt="" /><p class="title">套餐办理</p></div>';
 content += '<div class="app-btn" id="yewu"><img src="http://192.168.33.10:8080/image/logo.gif" alt="" /><p class="title">业务办理</p></div>';
 content += '<div class="app-btn" id="ad"><img src="http://192.168.33.10:8080/image/logo.gif" alt="" /><p class="title">最新活动</p></div></div>';
 $(".cmcc-toolbar").find(".logo").before(content);
@@ -39,7 +40,8 @@ $("#liuliang").click(function() {
                 var used_per = parseFloat(package['used'])/parseInt(package['size'])*100;
                 content += '<div class="data-bar"><div class="used" style="width: '+used_per.toFixed(2)+'%;"></div><div class="remain" style="width: '+(100-used_per).toFixed(2)+'%;"></div></div></div>'
             }
-            content = '<div class="total-package"><div class="item"><p class="title">总流量</p><p class="num">'+total_size+'MB</p></div><div class="item"><p class="title">剩余流量</p><p class="num" style="color: #9ee035;">'+total_used.toFixed(2)+'MB</p></div></div>' + content;
+            var total_remain = (total_size-total_used).toFixed(2);
+            content = '<div class="total-package"><div class="item"><p class="title">总流量</p><p class="num">'+total_size+'MB</p></div><div class="item"><p class="title">剩余流量</p><p class="num" style="color: #9ee035;">'+total_remain+'MB</p></div></div>' + content;
             content = '<div id="close-btn" style="color: #fff;">X</div>' + content;
             $(".cmcc-panel").find(".container").append(content);
             $(".cmcc-panel").show();
@@ -47,7 +49,29 @@ $("#liuliang").click(function() {
     });
 });
 
-//获取流量情况
+//获取流量套餐列表
+$("#data-plan").click(function() {
+    $(".cmcc-panel").find(".container").empty();
+    var api = "http://192.168.33.10:8080/api.php?act=get_data_plan";
+    $.ajax( {
+        url: api,
+        dataTpye: "jsonp",
+        success: function( response ) {
+            response = JSON.parse(response);
+            var content = '<div class="plan-wrapper">';
+            for(var i in response['data']) {
+                var plan = response['data'][i];
+                content += '<div class="plan"><div class="title">'+plan['name']+'</div><div class="price">'+plan['price']+' 元</div><div class="oper"><a href="javascript:void(0);" class="buy-plan-btn" data-id="'+plan['id']+'">订购</a></div></div>';
+            }
+            content += "</div>";
+            content = '<div id="close-btn">&times;</div>'+content;
+            $(".cmcc-panel").find(".container").append(content);
+            $(".cmcc-panel").show();
+        }
+    });
+});
+
+//获取业务列表
 $("#yewu").click(function() {
     $(".cmcc-panel").find(".container").empty();
     var api = "http://192.168.33.10:8080/api.php?act=get_yewu";
@@ -108,4 +132,12 @@ $(".cmcc-panel").on('click','.buy-yewu-btn',function() {
     $.get(api,{act:"buy_yewu",id:yewu_id},function() {
         location.href=location.href;
     })
-})
+});
+
+$(".cmcc-panel").on('click','.buy-plan-btn',function() {
+    var api = "http://192.168.33.10:8080/api.php";
+    var plan_id = $(this).data("id");
+    $.get(api,{act:"buy_data_plan",id:plan_id},function() {
+        location.href=location.href;
+    })
+});

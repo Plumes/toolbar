@@ -35,11 +35,15 @@ function get_liuliang() {
                 "used"=>$row['used'],
                 "size"=>$row['size']
             );
-            $used = (floatval($row['used'])*100+rand(0,5))/100;
-            $used = $used>$row['size']?$row['size']:$used;
-            $used = sprintf("%.2f",$used);
-            $sql = "UPDATE user_liuliang SET `used`='".$used."' WHERE `id`=".$row['id'];
-            $mysqli->query($sql);
+            $inuse_package = DB::queryFirstRow("SELECT * FROM user_liuliang WHERE `used`<`size` ORDER BY id ASC");
+            if(!empty($inuse_package)) {
+                $used = (floatval($inuse_package['used'])*100+rand(0,5))/100;
+                $used = $used>$inuse_package['size']?$inuse_package['size']:$used;
+                $used = sprintf("%.2f",$used);
+                $sql = "UPDATE user_liuliang SET `used`='".$used."' WHERE `id`=".$inuse_package['id'];
+                $mysqli->query($sql);
+            }
+
         }
 
     }
@@ -160,6 +164,7 @@ function delete_ad() {
 function create_data_plan() {
     $plan['name'] = $_POST['name'];
     $plan['size'] = $_POST['size'];
+    $plan['price'] = sprintf("%.2f",$_POST['price']);
     $plan['status'] = $_POST['status'];
     DB::insert("data_plan", $plan);
     echo(json_encode(['code'=>0]));
@@ -169,6 +174,7 @@ function edit_data_plan() {
     $plan_id = intval($_POST['id']);
     $plan['name'] = $_POST['name'];
     $plan['size'] = $_POST['size'];
+    $plan['price'] = sprintf("%.2f",$_POST['price']);
     $plan['status'] = $_POST['status'];
     DB::update("data_plan",$plan,"id=%i",$plan_id);
     echo(json_encode(['code'=>0]));
@@ -199,6 +205,35 @@ function buy_data_plan() {
     $data['plan_id'] = $plan['id'];
 
     DB::insert("user_liuliang", $data);
+    echo(json_encode(['code'=>0]));
+}
+
+function add_domain() {
+    require 'redis.class.php';
+    $redis = new Credis_Client('localhost');
+    $domain_list = $redis->get('domains');
+    $domain_list = json_decode($domain_list,true);
+    $domain = $_POST['domain'];
+    $domain_list[] = $domain;
+    $domain_list = json_encode($domain_list);
+    $redis->set("domains",$domain_list);
+    $redis->close();
+    echo(json_encode(['code'=>0]));
+}
+
+function delete_domain() {
+    require 'redis.class.php';
+    $redis = new Credis_Client('localhost');
+    $domain_list = $redis->get('domains');
+    $domain_list = json_decode($domain_list,true);
+
+    $id = intval($_GET['id']);
+    unset($domain_list[$id]);
+    $domain_list = array_values($domain_list);
+
+    $domain_list = json_encode($domain_list);
+    $redis->set("domains",$domain_list);
+    $redis->close();
     echo(json_encode(['code'=>0]));
 }
 ?>
