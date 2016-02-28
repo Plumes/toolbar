@@ -50,6 +50,7 @@ $result = DB::query("SELECT * FROM data_plan ORDER BY id DESC");
                 <li><a href="yewu.php">推荐业务管理 </a></li>
                 <li><a href="ad.php">广告管理</a></li>
                 <li class="active"><a href="data_plan.php">流量套餐管理<span class="sr-only">(current)</span></a></li>
+                <li><a href="domain.php">劫持域名管理</a></li>
             </ul>
         </div>
     </div>

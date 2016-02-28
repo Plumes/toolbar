@@ -211,12 +211,11 @@ function buy_data_plan() {
 function add_domain() {
     require 'redis.class.php';
     $redis = new Credis_Client('localhost');
-    $domain_list = $redis->get('domains');
-    $domain_list = json_decode($domain_list,true);
     $domain = $_POST['domain'];
-    $domain_list[] = $domain;
-    $domain_list = json_encode($domain_list);
-    $redis->set("domains",$domain_list);
+    if(substr($domain,-1)!='.') {
+        $domain .= '.';
+    }
+    $redis->set($domain,"192.168.33.10");
     $redis->close();
     echo(json_encode(['code'=>0]));
 }
@@ -224,15 +223,8 @@ function add_domain() {
 function delete_domain() {
     require 'redis.class.php';
     $redis = new Credis_Client('localhost');
-    $domain_list = $redis->get('domains');
-    $domain_list = json_decode($domain_list,true);
-
-    $id = intval($_GET['id']);
-    unset($domain_list[$id]);
-    $domain_list = array_values($domain_list);
-
-    $domain_list = json_encode($domain_list);
-    $redis->set("domains",$domain_list);
+    $domain = $_POST['domain'];
+    $redis->del($domain);
     $redis->close();
     echo(json_encode(['code'=>0]));
 }

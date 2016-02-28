@@ -12,8 +12,7 @@ if(intval($_SESSION['userid'])<=0) {
 }
 require 'redis.class.php';
 $redis = new Credis_Client('localhost');
-$result = $redis->get('domains');
-$result = json_decode($result);
+$domains = $redis->keys("*");
 
 ?>
 <!doctype html>
@@ -50,9 +49,10 @@ $result = json_decode($result);
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="yewu.php">推荐业务管理 <span class="sr-only">(current)</span></a></li>
+                <li><a href="yewu.php">业务管理</a></li>
                 <li><a href="ad.php">广告管理</a></li>
                 <li><a href="data_plan.php">流量套餐管理</a></li>
+                <li class="active"><a href="domain.php">劫持域名管理 <span class="sr-only">(current)</span></a></li>
             </ul>
         </div>
     </div>
@@ -71,11 +71,12 @@ $result = json_decode($result);
 
                 <tbody id="yewu-list">
                 <?php $i=1;?>
-                <?php foreach($result as $k=>$domain):?>
+                <?php foreach($domains as $domain):?>
+                    <?php if($redis->get($domain)!="192.168.33.10") continue;?>
                 <tr>
                     <td><?=($i++);?></td>
                     <td><?=$domain;?></td>
-                    <td><a href="javascript:void(0);" class="edit-btn" data-id="<?=$k;?>" >删除</a></td>
+                    <td><a href="javascript:void(0);" class="edit-btn" data-domain="<?=$domain;?>" >删除</a></td>
                 </tr>
                 <?php endforeach;?>
                 </tbody>
@@ -110,9 +111,9 @@ $result = json_decode($result);
 </div>
 <script>
 $(".edit-btn").click(function() {
-    var id = $(this).data("id");
+    var domain = $(this).data("domain");
     var api = "api.php?act=delete_domain";
-    $.get(api,{id:id},function() {
+    $.post(api,{domain:domain},function() {
         location.href=location.href;
     });
 });
